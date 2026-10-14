@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#180d18">
+<title>Retail × Love ❤️</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;padding:22px 14px;
+ display:flex;justify-content:center;
+ font-family:Arial,sans-serif;color:#fff4fa;
+ background:radial-gradient(circle at top,#63304d,#180d18 65%);
+}
+.app{width:100%;max-width:460px}
+header{text-align:center;padding:15px 0 25px}
+.brand{font-size:12px;letter-spacing:3px;color:#ff9bc5}
+.heart{font-size:58px;margin:15px;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.13)}}
+h1{font-size:28px;margin:8px}
+.subtitle{color:#d8c4d4;line-height:1.8;font-size:14px}
+.card{
+ background:#291827;border:1px solid #874365;
+ border-radius:24px;padding:22px 18px;
+ box-shadow:0 15px 40px #0005;
+}
+.progress{
+ height:7px;background:#493044;border-radius:20px;
+ overflow:hidden;margin:14px 0 8px
+}
+#bar{height:100%;width:5%;background:#ff5795;transition:.3s}
+.meta{display:flex;justify-content:space-between;font-size:12px;color:#e3b5d0}
+h2{font-size:20px;line-height:1.5;margin:22px 0 10px}
+.desc{font-size:13px;color:#d2bdce;line-height:1.7}
+#question{font-size:18px;line-height:1.6;margin:25px 0 18px;font-weight:bold}
+.options{display:grid;gap:10px}
+.option{
+ width:100%;padding:14px;text-align:left;border-radius:14px;
+ border:1px solid #65445e;background:#352436;color:white;
+ font-size:14px;cursor:pointer;line-height:1.5
+}
+.option.selected{background:#74324f;border-color:#ff7fb2}
+button:disabled{opacity:.4}
+.nav{display:flex;gap:10px;margin-top:18px}
+.nav button,.mainbtn{
+ flex:1;border:0;border-radius:14px;padding:14px;
+ font-weight:bold;font-size:14px;cursor:pointer
+}
+.back{background:#3b2b3b;color:white}
+.next,.mainbtn{background:linear-gradient(120deg,#ff70a8,#df347a);color:white}
+#result{display:none;text-align:center;line-height:1.9}
+#result .big{font-size:58px}
+#result p{color:#e2cede;font-size:14px}
+.footer{text-align:center;color:#bda5b8;font-size:11px;line-height:1.8;margin:20px 8px}
+.heartfloat{position:fixed;bottom:-30px;animation:rise 4s linear forwards;pointer-events:none}
+@keyframes rise{to{transform:translateY(-110vh) rotate(320deg);opacity:0}}
+.hidden{display:none!important}
+</style>
+</head>
+
+<body>
+<main class="app">
+<header>
+ <div class="brand">♡ RETAIL × LOVE ♡</div>
+ <div class="heart">💗</div>
+ <h1>Hai, <span style="color:#ff80b4" id="name">Kamu</span>!</h1>
+ <p class="subtitle">
+ Sebuah perjalanan kecil untuk saling mengenal.<br>
+ Jawab dengan jujur, tanpa tekanan. ❤️
+ </p>
+</header>
+
+<section class="card" id="quiz">
+ <div class="meta">
+  <span id="stage">Tahap 1 dari 4</span>
+  <span id="count">Pertanyaan 1 dari 5</span>
+ </div>
+ <div class="progress"><div id="bar"></div></div>
+
+ <h2 id="stageTitle">🤝 Kenalan</h2>
+ <p class="desc" id="stageDesc"></p>
+
+ <div id="question"></div>
+ <div class="options" id="options"></div>
+
+ <div class="nav">
+  <button class="back" id="back" onclick="previous()">← Kembali</button>
+  <button class="next" id="next" onclick="advance()" disabled>Lanjut →</button>
+ </div>
+ <p class="desc" style="text-align:center;margin-top:18px">
+ Tidak ada jawaban yang wajib. Kamu bebas memilih atau berhenti kapan saja.
+ </p>
+</section>
+
+<section class="card hidden" id="result">
+ <div class="big">💖</div>
+ <h2>Terima kasih sudah menyelesaikan perjalanan ini!</h2>
+ <p>
+ Apa pun jawabanmu, yang paling penting adalah
+ kejujuran, rasa nyaman, dan saling menghargai.
+ </p>
+ <p>
+ Kalau kalian sama-sama ingin melanjutkan,
+ bicarakan langsung dengan santai.
+ Status hubungan ditentukan oleh kalian berdua,
+ bukan oleh website ini.
+ </p>
+ <button class="mainbtn" onclick="restart()">Ulangi dari awal ↻</button>
+</section>
+
+<div class="footer">
+ Dibuat dengan tulus ♡<br>
+ Teman satu angkatan, saling menghargai, tanpa paksaan.
+</div>
+</main>
+
+<script>
+const namaCewek = "Nama Dia";
+document.getElementById("name").textContent =
+ namaCewek === "Nama Dia" ? "Kamu" : namaCewek;
+
+const stages = [
+ {
+  title:"🤝 Kenalan",
+  desc:"Tahap 1 — Mulai dari percakapan sederhana.",
+  questions:[
+   ["Kalau kenalan sama teman baru, kamu lebih suka…",
+    ["Ngobrol langsung 😊","Lewat chat 💬","Pelan-pelan dulu 🌷"]],
+   ["Biasanya kamu suka ngobrol tentang apa?",
+    ["Hobi dan musik 🎧","Sekolah dan keseharian 📚","Apa saja yang seru ✨"]],
+   ["Kalau punya waktu luang, kamu lebih suka…",
+    ["Jalan-jalan 🛍️","Nonton atau main game 🎮","Istirahat di rumah 🏡"]],
+   ["Menurutmu, pertemanan yang baik itu…",
+    ["Saling menghargai 🤝","Bisa saling cerita 💌","Seru dan apa adanya 😄"]],
+   ["Boleh nggak kita mulai kenalan sebagai teman?",
+    ["Boleh, ayo kenalan 😊","Boleh, tapi pelan-pelan 🌷","Aku belum nyaman 🙏"]]
+  ]
+ },
+ {
+  title:"💬 Makin Dekat",
+  desc:"Tahap 2 — Mengenal karakter dan kenyamanan.",
+  questions:[
+   ["Kamu lebih nyaman berkomunikasi lewat…",
+    ["Chat 📱","Ngobrol langsung 😊","Dua-duanya 🌸"]],
+   ["Kalau lagi ada masalah, kamu biasanya…",
+    ["Cerita ke teman 🫶","Menenangkan diri dulu 🌿","Tergantung situasi 💭"]],
+   ["Hal apa yang paling kamu hargai dari teman?",
+    ["Kejujuran 🤍","Perhatian kecil 🌷","Humor dan keseruan 😄"]],
+   ["Kalau kita punya hobi berbeda, menurutmu…",
+    ["Bisa saling belajar ✨","Tetap seru kalau saling menghargai 🤝","Cari kegiatan yang sama 🎨"]],
+   ["Apakah kamu nyaman kalau kita lebih sering ngobrol?",
+    ["Iya, boleh 😊","Boleh, asal santai 🌷","Belum untuk sekarang 🙏"]]
+  ]
+ },
+ {
+  title:"💌 Jujur tentang Perasaan",
+  desc:"Tahap 3 — Membicarakan ketertarikan dengan jujur.",
+  questions:[
+   ["Menurutmu, rasa suka biasanya dimulai dari…",
+    ["Sering ngobrol 💬","Kagum pada kepribadian seseorang ✨","Belum tahu pasti 🌷"]],
+   ["Kalau seseorang tertarik mengenalmu lebih dekat, kamu ingin dia…",
+    ["Jujur dan sopan 🤍","Memberi waktu untuk mengenal 🌸","Bertanya apakah aku nyaman 🙏"]],
+   ["Bagaimana kalau teman menyampaikan perasaan kepadamu?",
+    ["Aku akan mempertimbangkannya 😊","Aku ingin mengenalnya dahulu 🌷","Aku akan jujur tentang perasaanku 🤝"]],
+   ["Menurutmu, hubungan yang baik harus punya…",
+    ["Kepercayaan 🤍","Komunikasi 💬","Semua itu dan rasa hormat ✨"]],
+   ["Kalau aku bilang aku tertarik mengenalmu lebih dekat, bagaimana perasaanmu?",
+    ["Aku juga tertarik 😊","Aku ingin kenal lebih jauh dulu 🌷","Aku menganggapmu teman saja 🤝","Aku belum tahu 🙏"]]
+  ]
+ },
+ {
+  title:"❤️ Jadi Pasangan?",
+  desc:"Tahap 4 — Membahas kesiapan, bukan membuat janji otomatis.",
+  questions:[
+   ["Menurutmu, kapan dua orang siap berpacaran?",
+    ["Saat sama-sama yakin ❤️","Setelah saling mengenal 🌷","Saat keduanya siap dan nyaman 🤝"]],
+   ["Apa yang penting kalau menjalin hubungan?",
+    ["Kepercayaan dan kejujuran 🤍","Komunikasi yang sehat 💬","Saling menghargai batasan 🌿"]],
+   ["Kalau pasangan butuh waktu untuk dirinya sendiri, kamu…",
+    ["Menghargai waktunya 🌷","Membicarakan kebutuhan masing-masing 💬","Memberi ruang dan tetap saling percaya 🤝"]],
+   ["Kalau ada perbedaan pendapat, sebaiknya…",
+    ["Dibicarakan dengan tenang 🫶","Saling mendengarkan 👂","Mencari jalan tengah 🤍"]],
+   ["Kalau kita sama-sama punya perasaan, maukah kamu membicarakan kemungkinan menjadi pasangan?",
+    ["Mau, kita bicarakan ❤️","Aku ingin mengenalmu lebih lama 🌷","Aku ingin tetap berteman 🤝","Aku belum siap 🙏"]]
+  ]
+ }
+];
+
+let stageIndex=0;
+let questionIndex=0;
+let answers={};
+
+function key(){
+ return stageIndex+"-"+questionIndex;
+}
+
+function render(){
+ const s=stages[stageIndex];
+ const q=s.questions[questionIndex];
+ document.getElementById("stage").textContent=
+  "Tahap "+(stageIndex+1)+" dari "+stages.length;
+ document.getElementById("count").textContent=
+  "Pertanyaan "+(questionIndex+1)+" dari "+s.questions.length;
+ document.getElementById("bar").style.width=
+  (((stageIndex*5+questionIndex+1)/20)*100)+"%";
+ document.getElementById("stageTitle").textContent=s.title;
+ document.getElementById("stageDesc").textContent=s.desc;
+ document.getElementById("question").textContent=q[0];
+
+ const options=document.getElementById("options");
+ options.innerHTML="";
+ q[1].forEach((label,i)=>{
+  const b=document.createElement("button");
+  b.className="option";
+  b.textContent=label;
+  b.type="button";
+  b.onclick=()=>{
+   answers[key()]=i;
+   render();
+  };
+  if(answers[key()]===i)b.classList.add("selected");
+  options.appendChild(b);
+ });
+
+ document.getElementById("back").disabled=
+  stageIndex===0 && questionIndex===0;
+
+ document.getElementById("next").disabled=
+  answers[key()]===undefined;
+
+ document.getElementById("next").textContent=
+  stageIndex===3 && questionIndex===4
+   ? "Selesai 💗"
+   : questionIndex===4 ? "Tahap berikutnya →" : "Lanjut →";
+}
+
+function advance(){
+ if(answers[key()]===undefined)return;
+
+ if(questionIndex<4){
+  questionIndex++;
+ }else if(stageIndex<3){
+  stageIndex++;
+  questionIndex=0;
+ }else{
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("bar").style.width="100%";
+  return;
+ }
+ render();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function previous(){
+ if(questionIndex>0){
+  questionIndex--;
+ }else if(stageIndex>0){
+  stageIndex--;
+  questionIndex=4;
+ }else{
+  return;
+ }
+ render();
+}
+
+function restart(){
+ stageIndex=0;
+ questionIndex=0;
+ answers={};
+ document.getElementById("result").classList.add("hidden");
+ document.getElementById("quiz").classList.remove("hidden");
+ render();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+render();
+</script>
+</body>
+</html>
+
+http://127.0.0.1:8000
+
+127.0.0.1 
