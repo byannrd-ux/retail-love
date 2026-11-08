@@ -236,24 +236,73 @@ function render(){
    : questionIndex===4 ? "Tahap berikutnya →" : "Lanjut →";
 }
 
-function advance(){
- if(answers[key()]===undefined)return;
+	
+const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbzkoPkWKU7wq5ZRmNrLrjUSZyrLGFhVygJ0gXHiOeRcUwVvsXJtv6wGtY6i2yblNWaq/exec";
 
- if(questionIndex<4){
-  questionIndex++;
- }else if(stageIndex<3){
-  stageIndex++;
-  questionIndex=0;
- }else{
-  document.getElementById("quiz").classList.add("hidden");
-  document.getElementById("result").classList.remove("hidden");
-  document.getElementById("bar").style.width="100%";
-  return;
- }
- render();
- window.scrollTo({top:0,behavior:"smooth"});
+async function sendAnswers() {
+  const readableAnswers = {};
+
+  stages.forEach((stage, si) => {
+    stage.questions.forEach((question, qi) => {
+      const selected = answers[si + "-" + qi];
+
+      if (selected !== undefined) {
+        readableAnswers[question[0]] =
+          question[1][selected];
+      }
+    });
+  });
+
+  const payload = {
+    name: "Pengunjung RETAIL LOVE",
+    answers: readableAnswers,
+    submittedAt: new Date().toISOString()
+  };
+
+  await fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify(payload)
+  });
 }
 
+	
+async function advance() {
+  if (answers[key()] === undefined) return;
+
+  if (questionIndex < 4) {
+    questionIndex++;
+  } else if (stageIndex < 3) {
+    stageIndex++;
+    questionIndex = 0;
+  } else {
+    const nextButton = document.getElementById("next");
+    nextButton.disabled = true;
+    nextButton.textContent = "Mengirim jawaban...";
+
+    try {
+      await sendAnswers();
+
+      document.getElementById("quiz").classList.add("hidden");
+      document.getElementById("result").classList.remove("hidden");
+      document.getElementById("bar").style.width = "100%";
+    } catch (error) {
+      alert("Pengiriman gagal. Periksa koneksi internet lalu coba lagi.");
+      nextButton.disabled = false;
+      nextButton.textContent = "Coba kirim lagi";
+    }
+
+    return;
+  }
+
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+	
 function previous(){
  if(questionIndex>0){
   questionIndex--;
