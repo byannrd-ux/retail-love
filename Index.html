@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#180d18">
+<title>RETAIL LOVE ❤️</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;padding:22px 14px;
+ display:flex;justify-content:center;
+ font-family:Arial,sans-serif;color:#fff4fa;
+ background:radial-gradient(circle at top,#63304d,#180d18 65%);
+}
+.app{width:100%;max-width:460px}
+header{text-align:center;padding:15px 0 25px}
+.brand{font-size:12px;letter-spacing:3px;color:#ff9bc5}
+.heart{font-size:58px;margin:15px;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.13)}}
+h1{font-size:28px;margin:8px}
+.subtitle{color:#d8c4d4;line-height:1.8;font-size:14px}
+.card{
+ background:#291827;border:1px solid #874365;
+ border-radius:24px;padding:22px 18px;
+ box-shadow:0 15px 40px #0005;
+}
+.progress{
+ height:7px;background:#493044;border-radius:20px;
+ overflow:hidden;margin:14px 0 8px
+}
+#bar{height:100%;width:5%;background:#ff5795;transition:.3s}
+.meta{
+ display:flex;justify-content:space-between;gap:8px;
+ font-size:12px;color:#e3b5d0
+}
+h2{font-size:20px;line-height:1.5;margin:22px 0 10px}
+.desc{font-size:13px;color:#d2bdce;line-height:1.7}
+#question{font-size:18px;line-height:1.6;margin:25px 0 18px;font-weight:bold}
+.options{display:grid;gap:10px}
+.option{
+ width:100%;padding:14px;text-align:left;border-radius:14px;
+ border:1px solid #65445e;background:#352436;color:white;
+ font-size:14px;cursor:pointer;line-height:1.5
+}
+.option.selected{background:#74324f;border-color:#ff7fb2}
+button:disabled{opacity:.4;cursor:not-allowed}
+.nav{display:flex;gap:10px;margin-top:18px}
+.nav button,.mainbtn{
+ flex:1;border:0;border-radius:14px;padding:14px;
+ font-weight:bold;font-size:14px;cursor:pointer
+}
+.back{background:#3b2b3b;color:white}
+.next,.mainbtn{
+ background:linear-gradient(120deg,#ff70a8,#df347a);color:white
+}
+#result{display:none;line-height:1.9}
+#result .big{text-align:center;font-size:58px}
+#result p{color:#e2cede;font-size:14px}
+#resultSummary{padding-left:20px;font-size:13px;color:#e2cede}
+#resultSummary li{margin-bottom:10px}
+.result-box{
+ background:#352436;border:1px solid #71415f;
+ border-radius:16px;padding:15px;margin:16px 0
+}
+#resultTitle{color:#ff9bc5;margin-top:18px}
+#finalMessage{margin-top:20px}
+.message-section{
+ border:1px solid #71415f;background:#352436;
+ border-radius:16px;padding:15px;margin:16px 0
+}
+.message-section h3{font-size:16px;color:#ff9bc5;margin:0 0 10px}
+.message-section p{font-size:14px;line-height:1.9;color:#f0dfeb;margin:8px 0}
+.outfit{
+ background:linear-gradient(135deg,#211a24,#503047);
+ border:1px solid #87516f;border-radius:14px;padding:14px;
+ margin:12px 0
+}
+.outfit strong{color:#ffacd0}
+.signature{text-align:center;padding:16px 8px;color:#ffacd0}
+.hidden{display:none!important}
+.footer{text-align:center;color:#bda5b8;font-size:11px;line-height:1.8;margin:20px 8px}
+</style>
+</head>
+
+<body>
+<main class="app">
+
+<header>
+ <div class="brand">♡ RETAIL LOVE ♡</div>
+ <div class="heart">💗</div>
+ <h1>Hai, <span style="color:#ff80b4" id="name">Deziah</span>!</h1>
+ <p class="subtitle">
+ Sebuah perjalanan kecil untuk saling mengenal.<br>
+ Jawab dengan jujur, tanpa tekanan. ❤️
+ </p>
+</header>
+
+<section class="card" id="quiz">
+ <div class="meta">
+  <span id="stage">Tahap 1 dari 4</span>
+  <span id="count">Pertanyaan 1 dari 5</span>
+ </div>
+
+ <div class="progress"><div id="bar"></div></div>
+ <h2 id="stageTitle">🤝 Kenalan</h2>
+ <p class="desc" id="stageDesc"></p>
+ <div id="question"></div>
+ <div class="options" id="options"></div>
+
+ <div class="nav">
+  <button class="back" id="back" onclick="previous()">← Kembali</button>
+  <button class="next" id="next" onclick="advance()" disabled>Lanjut →</button>
+ </div>
+
+ <p class="desc" style="text-align:center;margin-top:18px">
+ Tidak ada jawaban yang wajib. Kamu bebas memilih atau berhenti kapan saja.
+ </p>
+</section>
+
+<section class="card hidden" id="result">
+ <div class="big">💖</div>
+ <h2>Terima kasih sudah menyelesaikan kuis!</h2>
+
+ <div class="result-box">
+  <h2 id="resultTitle">🌷 Hasil Kuis</h2>
+  <p id="resultDescription"></p>
+  <p id="resultCount"></p>
+  <p class="desc" id="resultNote"></p>
+ </div>
+
+ <h2>📋 Rangkuman Jawabanmu</h2>
+ <ul id="resultSummary"></ul>
+
+ <p>
+ Kalau kamu sudah siap, ada pesan pribadi dari pembuat website ini
+ di halaman berikutnya. Kamu bebas membacanya atau berhenti di sini.
+ </p>
+
+ <button class="mainbtn" id="revealButton" onclick="showFinalMessage()">
+ Buka Pesan Terakhir ❤️
+ </button>
+
+ <div id="finalMessage" class="hidden">
+  <div class="big">💌</div>
+  <h2 style="text-align:center">A Little Note From Me</h2>
+
+  <div class="message-section">
+   <h3>♡ Tentang RETAIL LOVE</h3>
+   <p>
+    Deziah, aku mau menjelaskan sedikit tentang website RETAIL LOVE ❤️
+    ini. Aku membuatnya sendiri sebagai cara untuk menyampaikan sesuatu
+    yang mungkin agak susah aku ucapkan secara langsung.
+   </p>
+   <p>
+    Aku orangnya introvert. Kadang aku lebih berani menuangkan pikiran
+    lewat tulisan, desain, atau website daripada bicara langsung
+    di depan orangnya. Aku membuat website ini dengan niat yang tulus,
+    supaya kamu bisa mengenal sisi diriku yang mungkin belum terlihat
+    saat kita bertemu di sekolah.
+   </p>
+   <p>
+    Aku nggak meminta kamu membalas perasaanku dengan cara tertentu.
+    Aku cuma ingin jujur. Apa pun perasaan dan jawabanmu, aku tetap
+    ingin menghargai kenyamananmu.
+   </p>
+  </div>
+
+  <div class="message-section">
+   <h3>🎮 Rencana Fotbar Event Roblox</h3>
+   <p>
+    Kalau besok kamu ada waktu dan mau, aku pengin fotbar sama kamu
+    di event Roblox, sekalian berfoto dengan kardus atau properti Roblox
+    yang ada di acara itu. Buatku, foto sederhana seperti itu bisa jadi
+    kenangan yang menyenangkan.
+   </p>
+   <p>
+    Aku juga kepikiran outfit couple dengan warna yang serasi.
+    Bukan berarti kita otomatis menjadi pasangan, ya.
+    Aku cuma ingin mengajakmu mencoba konsep outfit yang sama
+    kalau kamu juga suka idenya.
+   </p>
+
+   <div class="outfit">
+    <strong>🖤🤍 Konsep outfit couple</strong>
+    <p><strong>Aku:</strong> kemeja hitam dan celana putih.</p>
+    <p><strong>Kamu:</strong> kemeja hitam, kerudung, dan celana putih.</p>
+    <p>
+     Temanya hitam-putih supaya terlihat serasi dan cocok buat fotbar.
+     Aku ingin mencoba gaya yang mirip tren couple outfit yang lagi viral.
+     Tapi pakaiannya tetap harus sesuai aturan sekolah, dan aku mau
+     kamu juga nyaman memakainya. Kalau kamu lebih suka outfit lain,
+     kita bisa cari pilihan yang sama-sama cocok.
+    </p>
+   </div>
+
+   <p>
+    Jadi, kalau kamu tertarik, kita bisa fotbar setelah sama-sama sepakat.
+    Kalau belum mau atau nggak nyaman, nggak apa-apa kok.
+   </p>
+  </div>
+
+  <div class="message-section">
+   <h3>🌷 Aku Introvert, Bukan Nggak Mau Ketemu</h3>
+   <p>
+    Aku mau jujur soal satu hal. Aku kadang belum berani datang sendiri
+    ke kelasmu, apalagi kalau suasananya ramai dan banyak orang
+    memperhatikan. Aku bisa malu dan bingung harus mulai bicara dari mana.
+   </p>
+   <p>
+    Kadang aku lebih berani kalau ada teman-temanmu yang memang sedang
+    mau ke kantin, jadi aku bisa ikut menyapa dalam suasana yang lebih
+    santai. Kalau situasinya tenang, aku mungkin bisa datang sendiri.
+    Aku juga kadang ingin mampir ke kelasmu, tergantung mood dan
+    keberanianku saat itu.
+   </p>
+   <p>
+    Aku nggak mau mengganggumu saat kelas ramai atau saat kamu sedang
+    sibuk. Kalau kamu nyaman dan waktunya pas, kita bisa janjian
+    bertemu di kantin saat istirahat, atau di tempat sekolah yang
+    memang diperbolehkan dan nyaman untuk kita berdua.
+   </p>
+   <p>
+    Aku nggak ingin datang tiba-tiba tanpa memastikan kamu punya waktu.
+    Jadi, kalau mau ketemu, kita saling memberi kabar terlebih dahulu,
+    ya.
+   </p>
+  </div>
+
+  <div class="message-section">
+   <h3>🍱 Tentang MBG dan Perhatian Kecil</h3>
+   <p>
+    Aku juga kepikiran untuk berbagi MBG sesekali kalau aturan sekolah
+    mengizinkan dan kita sama-sama setuju. Kalau aku memang punya
+    makanan yang boleh kubagikan untukmu, aku ingin menyiapkannya
+    buat kamu.
+   </p>
+   <p>
+    Kalau kita sudah janjian, kamu bisa menghampiri kelasku untuk
+    mengambil bagian yang memang aku siapkan buatmu. Aku nggak harus
+    selalu mengantarkan makanan itu ke kelasmu. Tempat pengambilannya
+    kita tentukan bersama di tempat yang diperbolehkan sekolah.
+   </p>
+   <p>
+    Sebaliknya, kalau kamu juga ingin berbagi MBG dengan aku, aku bisa
+    menghampirimu saat waktunya pas. Kadang aku mungkin berani
+    menyamperinmu, kadang aku masih malu. Semuanya tergantung situasi
+    dan mood, jadi kita saling memberi tahu saja.
+   </p>
+   <p>
+    Aku nggak ingin kamu merasa wajib berbagi makanan denganku.
+    Perhatian kecil akan lebih berarti kalau dilakukan dengan tulus,
+    tanpa paksaan, dan tanpa mengganggu kegiatan belajar.
+   </p>
+  </div>
+
+  <div class="message-section">
+   <h3>💗 Sisi Diriku yang Mungkin Belum Kamu Tahu</h3>
+   <p>
+    Aku mungkin pendiam saat pertama kali bertemu. Tapi ketika sudah
+    merasa nyaman dengan seseorang, aku bisa menjadi orang yang tulus,
+    perhatian, penyayang, dan setia. Aku juga bisa agak manja dan suka
+    menghabiskan waktu bersama orang yang dekat denganku.
+   </p>
+   <p>
+    Kadang aku ingin lebih dekat atau mengajakmu pergi sebentar,
+    tetapi aku juga harus belajar menyampaikan keinginanku dengan baik.
+    Aku nggak mau membuatmu merasa harus selalu menemaniku.
+    Kalau kamu sedang sibuk, ingin sendiri, atau nggak ingin diganggu,
+    aku akan berusaha menghargainya.
+   </p>
+   <p>
+    Aku berharap kita bisa saling mengatakan apa yang membuat kita
+    nyaman atau tidak nyaman, daripada saling menebak-nebak.
+   </p>
+  </div>
+
+  <div class="message-section">
+   <h3>📍 Kalau Kita Mau Bertemu</h3>
+   <p>
+    Aku lebih suka kalau kita membuat janji terlebih dahulu.
+    Bisa saat istirahat di kantin atau setelah kegiatan sekolah,
+    selama waktunya cocok untuk kita berdua.
+   </p>
+   <p>
+    Aku nggak mau memaksakan pertemuan saat kamu sibuk, dan aku juga
+    nggak berharap kamu harus selalu datang menemuiku. Kita bisa
+    bergantian menyapa dan mencari waktu yang sama-sama nyaman.
+   </p>
+   <p>
+    Kalau aku sedang malu, mungkin aku butuh sedikit waktu untuk
+    memberanikan diri. Itu bukan berarti aku nggak peduli.
+   </p>
+  </div>
+
+  <div class="message-section">
+   <h3>❤️ Kalimat Terakhir Dariku</h3>
+   <p>
+    Deziah, aku mungkin bukan orang yang paling berani untuk datang
+    ke kelasmu, memulai percakapan, atau mengungkapkan semuanya
+    secara langsung. Aku introvert, dan terkadang aku butuh waktu
+    untuk mengumpulkan keberanian.
+   </p>
+   <p>
+    Tapi aku ingin belajar mengenalmu secara perlahan, berbagi cerita,
+    tertawa bersama, dan menciptakan kenangan sederhana yang bisa
+    kita ingat suatu hari nanti.
+   </p>
+   <p>
+    Kalau besok kita bisa fotbar di event Roblox, buatku itu sudah
+    menjadi momen yang menyenangkan. Nggak perlu sempurna, nggak perlu
+    dipaksakan, dan nggak harus langsung menjadi sesuatu yang besar.
+   </p>
+   <p>
+    Terima kasih sudah membaca website ini sampai akhir.
+    Aku nggak meminta kamu langsung memberikan jawaban.
+    Aku cuma ingin kamu tahu bahwa aku membuatnya dengan sungguh-sungguh
+    dan aku menghargai perasaanmu.
+   </p>
+   <p>
+    Kalau kamu ingin mengenalku lebih jauh, aku akan senang.
+    Kalau kamu hanya ingin berteman, aku juga akan berusaha
+    menghargai keputusanmu.
+   </p>
+
+   <div class="signature">
+    <div style="font-size:35px">♡</div>
+    <strong>Dari aku,</strong><br>
+    seseorang yang mungkin pendiam saat bertemu,<br>
+    tetapi sedang belajar berani menyampaikan isi hati. ❤️
+   </div>
+  </div>
+
+  <button class="mainbtn" onclick="restart()">Ulangi dari awal ↻</button>
+ </div>
+</section>
+
+<div class="footer">
+ Dibuat dengan tulus ♡<br>
+ Teman satu angkatan, saling menghargai, tanpa paksaan.
+</div>
+</main>
+
+<script>
+const namaCewek = "DeziahKhoiruJum'ah";
+document.getElementById("name").textContent = "Deziah";
+
+const stages = [
+ {
+  title:"🤝 Kenalan",
+  desc:"Tahap 1 — Mulai dari percakapan sederhana.",
+  questions:[
+   ["Kalau kenalan sama teman baru, kamu lebih suka…",
+    ["Ngobrol langsung 😊","Lewat chat 💬","Pelan-pelan dulu 🌷"]],
+   ["Biasanya kamu suka ngobrol tentang apa?",
+    ["Hobi dan musik 🎧","Sekolah dan keseharian 📚","Apa saja yang seru ✨"]],
+   ["Kalau punya waktu luang, kamu lebih suka…",
+    ["Jalan-jalan 🛍️","Nonton atau main game 🎮","Istirahat di rumah 🏡"]],
+   ["Menurutmu, pertemanan yang baik itu…",
+    ["Saling menghargai 🤝","Bisa saling cerita 💌","Seru dan apa adanya 😄"]],
+   ["Boleh nggak kita mulai kenalan sebagai teman?",
+    ["Boleh, ayo kenalan 😊","Boleh, tapi pelan-pelan 🌷","Aku belum nyaman 🙏"]]
+  ]
+ },
+ {
+  title:"💬 Makin Dekat",
+  desc:"Tahap 2 — Mengenal karakter dan kenyamanan.",
+  questions:[
+   ["Kamu lebih nyaman berkomunikasi lewat…",
+    ["Chat 📱","Ngobrol langsung 😊","Dua-duanya 🌸"]],
+   ["Kalau lagi ada masalah, kamu biasanya…",
+    ["Cerita ke teman 🫶","Menenangkan diri dulu 🌿","Tergantung situasi 💭"]],
+   ["Hal apa yang paling kamu hargai dari teman?",
+    ["Kejujuran 🤍","Perhatian kecil 🌷","Humor dan keseruan 😄"]],
+   ["Kalau kita punya hobi berbeda, menurutmu…",
+    ["Bisa saling belajar ✨","Tetap seru kalau saling menghargai 🤝","Cari kegiatan yang sama 🎨"]],
+   ["Apakah kamu nyaman kalau kita lebih sering ngobrol?",
+    ["Iya, boleh 😊","Boleh, asal santai 🌷","Belum untuk sekarang 🙏"]]
+  ]
+ },
+ {
+  title:"💌 Jujur tentang Perasaan",
+  desc:"Tahap 3 — Membicarakan ketertarikan dengan jujur.",
+  questions:[
+   ["Menurutmu, rasa suka biasanya dimulai dari…",
+    ["Sering ngobrol 💬","Kagum pada kepribadian seseorang ✨","Belum tahu pasti 🌷"]],
+   ["Kalau seseorang tertarik mengenalmu lebih dekat, kamu ingin dia…",
+    ["Jujur dan sopan 🤍","Memberi waktu untuk mengenal 🌸","Bertanya apakah aku nyaman 🙏"]],
+   ["Bagaimana kalau teman menyampaikan perasaan kepadamu?",
+    ["Aku akan mempertimbangkannya 😊","Aku ingin mengenalnya dahulu 🌷","Aku akan jujur tentang perasaanku 🤝"]],
+   ["Menurutmu, hubungan yang baik harus punya…",
+    ["Kepercayaan 🤍","Komunikasi 💬","Semua itu dan rasa hormat ✨"]],
+   ["Kalau aku bilang aku tertarik mengenalmu lebih dekat, bagaimana perasaanmu?",
+    ["Aku juga tertarik 😊","Aku ingin kenal lebih jauh dulu 🌷","Aku menganggapmu teman saja 🤝","Aku belum tahu 🙏"]]
+  ]
+ },
+ {
+  title:"❤️ Jadi Pasangan?",
+  desc:"Tahap 4 — Membahas kesiapan, bukan membuat janji otomatis.",
+  questions:[
+   ["Menurutmu, kapan dua orang siap berpacaran?",
+    ["Saat sama-sama yakin ❤️","Setelah saling mengenal 🌷","Saat keduanya siap dan nyaman 🤝"]],
+   ["Apa yang penting kalau menjalin hubungan?",
+    ["Kepercayaan dan kejujuran 🤍","Komunikasi yang sehat 💬","Saling menghargai batasan 🌿"]],
+   ["Kalau pasangan butuh waktu untuk dirinya sendiri, kamu…",
+    ["Menghargai waktunya 🌷","Membicarakan kebutuhan masing-masing 💬","Memberi ruang dan tetap saling percaya 🤝"]],
+   ["Kalau ada perbedaan pendapat, sebaiknya…",
+    ["Dibicarakan dengan tenang 🫶","Saling mendengarkan 👂","Mencari jalan tengah 🤍"]],
+   ["Kalau kita sama-sama punya perasaan, maukah kamu membicarakan kemungkinan menjadi pasangan?",
+    ["Mau, kita bicarakan ❤️","Aku ingin mengenalmu lebih lama 🌷","Aku ingin tetap berteman 🤝","Aku belum siap 🙏"]]
+  ]
+ }
+];
+
+let stageIndex=0;
+let questionIndex=0;
+let answers={};
+
+function key(){
+ return stageIndex+"-"+questionIndex;
+}
+
+function render(){
+ const s=stages[stageIndex];
+ const q=s.questions[questionIndex];
+
+ document.getElementById("stage").textContent=
+  "Tahap "+(stageIndex+1)+" dari "+stages.length;
+ document.getElementById("count").textContent=
+  "Pertanyaan "+(questionIndex+1)+" dari "+s.questions.length;
+ document.getElementById("bar").style.width=
+  (((stageIndex*5+questionIndex+1)/20)*100)+"%";
+ document.getElementById("stageTitle").textContent=s.title;
+ document.getElementById("stageDesc").textContent=s.desc;
+ document.getElementById("question").textContent=q[0];
+
+ const options=document.getElementById("options");
+ options.innerHTML="";
+
+ q[1].forEach((label,i)=>{
+  const b=document.createElement("button");
+  b.className="option";
+  b.textContent=label;
+  b.type="button";
+  b.onclick=()=>{
+   answers[key()]=i;
+   render();
+  };
+  if(answers[key()]===i)b.classList.add("selected");
+  options.appendChild(b);
+ });
+
+ document.getElementById("back").disabled=
+  stageIndex===0 && questionIndex===0;
+
+ document.getElementById("next").disabled=
+  answers[key()]===undefined;
+
+ document.getElementById("next").textContent=
+  stageIndex===3 && questionIndex===4
+   ? "Selesai 💗"
+   : questionIndex===4 ? "Tahap berikutnya →" : "Lanjut →";
+}
+
+const APPS_SCRIPT_URL =
+ "https://script.google.com/macros/s/AKfycbzkoPkWKU7wq5ZRmNrLrjUSZyrLGFhVygJ0gXHiOeRcUwVvsXJtv6wGtY6i2yblNWaq/exec";
+
+async function sendAnswers(){
+ const readableAnswers={};
+
+ stages.forEach((stage,si)=>{
+  stage.questions.forEach((question,qi)=>{
+   const selected=answers[si+"-"+qi];
+   if(selected!==undefined){
+    readableAnswers[question[0]]=question[1][selected];
+   }
+  });
+ });
+
+ const payload={
+  name:"Pengunjung RETAIL LOVE",
+  answers:readableAnswers,
+  submittedAt:new Date().toISOString()
+ };
+
+ await fetch(APPS_SCRIPT_URL,{
+  method:"POST",
+  mode:"no-cors",
+  headers:{"Content-Type":"text/plain;charset=utf-8"},
+  body:JSON.stringify(payload)
+ });
+}
+
+async function advance(){
+ if(answers[key()]===undefined)return;
+
+ if(questionIndex<4){
+  questionIndex++;
+ }else if(stageIndex<3){
+  stageIndex++;
+  questionIndex=0;
+ }else{
+  const nextButton=document.getElementById("next");
+  nextButton.disabled=true;
+  nextButton.textContent="Memproses...";
+
+  try{
+   await sendAnswers();
+  }catch(error){
+   console.warn("Pengiriman jawaban mungkin gagal:",error);
+  }
+
+  showResults();
+  return;
+ }
+
+ render();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showResults(){
+ document.getElementById("quiz").classList.add("hidden");
+
+ const result=document.getElementById("result");
+ result.style.display="block";
+ result.classList.remove("hidden");
+
+ document.getElementById("finalMessage").classList.add("hidden");
+ document.getElementById("revealButton").classList.remove("hidden");
+ document.getElementById("bar").style.width="100%";
+
+ const summary=document.getElementById("resultSummary");
+ summary.innerHTML="";
+
+ let friendly=0;
+ let cautious=0;
+ let notReady=0;
+ let total=0;
+
+ stages.forEach((stage,si)=>{
+  stage.questions.forEach((question,qi)=>{
+   const selected=answers[si+"-"+qi];
+   if(selected===undefined)return;
+
+   const answer=question[1][selected];
+   const li=document.createElement("li");
+   li.textContent=question[0]+" "+answer;
+   summary.appendChild(li);
+   total++;
+
+   const text=answer.toLowerCase();
+
+   if(
+    text.includes("boleh") ||
+    text.includes("iya") ||
+    text.includes("tertarik") ||
+    text.includes("mau,") ||
+    text.includes("yakin") ||
+    text.includes("sering ngobrol") ||
+    text.includes("semua itu")
+   ) friendly++;
+
+   if(
+    text.includes("pelan-pelan") ||
+    text.includes("lebih lama") ||
+    text.includes("dahulu") ||
+    text.includes("asal santai") ||
+    text.includes("tergantung") ||
+    text.includes("belum tahu")
+   ) cautious++;
+
+   if(
+    text.includes("belum nyaman") ||
+    text.includes("belum untuk sekarang") ||
+    text.includes("teman saja") ||
+    text.includes("tetap berteman") ||
+    text.includes("belum siap")
+   ) notReady++;
+  });
+ });
+
+ let title="🌷 Hasil Kuis: Cara Kamu Mengenal Seseorang";
+ let description=
+  "Setiap orang punya cara sendiri untuk mengenal orang lain. " +
+  "Berikut gambaran sederhana berdasarkan pilihan jawabanmu.";
+
+ if(notReady>=2){
+  title="🌿 Hasil Kuis: Kamu Berhak Menentukan Batasan";
+  description=
+   "Beberapa jawabanmu menunjukkan pentingnya kesiapan dan " +
+   "kenyamanan. Kamu tidak perlu terburu-buru menen
